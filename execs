@@ -1,0 +1,4 @@
+exec prog (1,2,3)
+exec prog (3,1,5)
+exec prog (5,4,10)
+exec prog (2,4,1)
