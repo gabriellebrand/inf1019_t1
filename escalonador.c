@@ -14,7 +14,6 @@
 #define DESCE 1
 #define SOBE -1
 #define PERMANECE 0
-#define SIGNEW 70
 
 //./prog 1 2 3 NULL
 typedef enum {
@@ -191,7 +190,8 @@ void subtraiRajadaProcCorr() {
 	else {
 		printf("rajadas chegaram ao fim -> deveria ter sido removida pelo handler.\n");
 	}
-}*/
+}
+*/
 
 void executaProcCorrente() {
 	printf("[EXECORR]Executa processo corrente. idxCorr = %d \n", idxCorr);
@@ -262,13 +262,13 @@ void terminaIO() {
 
 //handler do sigchild (enviado ao fim do programa) -> processo corrente é eliminado pelo pai
 void sigchildHandler (int signal) {
-	int status;
-	waitpid(procs[idxCorr].pid, &status, WNOHANG);
-	if (WIFEXITED(status) == 1) { //processo terminou
-		printf("[SIGCHLD] idxCorr = %d\n", idxCorr);
-		procs[idxCorr].estado = FINALIZADO;
-		novoProcCorrente();
-	}
+	// int status;
+	// waitpid(procs[idxCorr].pid, &status, WNOHANG);
+	// if (WIFEXITED(status) == 1) { //processo terminou
+	// 	printf("[SIGCHLD] idxCorr = %d\n", idxCorr);
+	// 	procs[idxCorr].estado = FINALIZADO;
+	// 	novoProcCorrente();
+	// }
 }
 
 //handler do sinal que informa que o processo corrente entrou em IO
@@ -441,7 +441,7 @@ void mandaInput (char* str, int argc)
    write(fd[1], &argc, sizeof(int));
    printf("Enviou input \n");
    kill(getppid(), SIGUSR2);
-	free(str);
+	//free(str);
 }
 
 
@@ -482,9 +482,10 @@ int main() {
 	printf("inicio programa, fd = %d %d \n", fd[0], fd[1]);
 	
 	geraInterpretador();
-	
-	while(filaVazia(filas[0]));
-	
+
+	time_t ini = time(NULL);
+	while(difftime(time(NULL),ini) < 5); //aguarda todos os processos entrarem na fila
+
 	novoProcCorrente();
 	escalonaProcessos();
 	
